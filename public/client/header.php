@@ -710,8 +710,14 @@
                                     </li>
 
                                 <?php } ?>
-                                <li><a>Dark mode : <input id="ThemeColor" type="checkbox"
-                                                          onchange="changeTheme('dark');" data-secondary-color="#ebeff2"
+                                <li><a>Dark mode : <input id="ThemeColor" type="checkbox" <?php
+                                        if ($_COOKIE['theme'] == 'dark') {
+                                            echo 'checked onchange="changeTheme(\'light\');"';
+                                        } else {
+                                            echo 'onchange="changeTheme(\'dark\');"';
+                                        }
+                                ?>
+                                                          data-secondary-color="#ebeff2"
                                                           data-plugin="switchery" data-color="#f05050" data-size="small"
                                                           data-switchery="true"></a>
                                 </li>
