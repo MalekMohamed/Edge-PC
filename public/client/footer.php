@@ -20,10 +20,8 @@
     var resizefunc = [];
 </script>
 <!-- jQuery  -->
-
 <script src="<?php echo $app->BASE_URL('public/assets/js/bootstrap.min.js'); ?>"></script>
 <script src="<?php echo $app->BASE_URL('public/assets/js/app.js'); ?>"></script>
-
 <script src="<?php echo $app->BASE_URL('public/assets/js/jquery.core.js'); ?>"></script>
 <script src="<?php echo $app->BASE_URL('public/assets/js/jquery.app.js'); ?>"></script>
 <script>

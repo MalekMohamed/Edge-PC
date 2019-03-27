@@ -456,9 +456,57 @@
                                             </div>
                                             <div class="form-group m-t-20 m-b-0">
                                                 <div class="col-sm-6">
-                                                    <a href="<?php echo $app->BASE_URL('account/recover_password'); ?>"
+                                                    <a data-animation="fadein" onclick="Custombox.close();" data-plugin="custommodal" data-overlayspeed="200"
+                                                       data-overlaycolor="#36404a" href=".reset-model"
                                                        class="text-dark"><i class="fa fa-lock m-r-5"></i>
                                                         Forgot your password?</a>
+                                                </div>
+
+                                            </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <button type="submit"
+                                                class="btn btn-primary waves-effect waves-light"><i
+                                                    class="fa fa-sign-in"></i> Submit
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default waves-effect pull-right "
+                                                onclick="Custombox.close();"><i class="fa fa-times"></i>
+                                            Close
+                                        </button>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-demo text-left reset-model">
+                            <div class="custom-modal-dialog">
+                                <div class="custom-modal-content">
+                                    <div class="custom-modal-header">
+                                        <button type="button" class="close" onclick="Custombox.close();"
+                                                aria-hidden="true">×
+                                        </button>
+                                        <h4 class="custom-modal-title">Recover password
+                                        </h4>
+                                    </div>
+                                    <div class="custom-modal-text">
+                                        <form action="#" class="form-horizontal reset-form"
+                                              data-parsley-validate="" novalidate="">
+                                            <div class="form-group ">
+                                                <div class="col-xs-12">
+                                                    <label for="reset_email" class="control-label">Email
+                                                        : </label>
+                                                    <input class="form-control" id="reset_email"
+                                                           name="Email" type="email"
+                                                           required="" placeholder="email@domain.com">
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-t-20 m-b-0">
+                                                <div class="col-sm-6">
+                                                    <a data-animation="fadein" onclick="Custombox.close();" data-plugin="custommodal" data-overlayspeed="200"
+                                                       data-overlaycolor="#36404a" href=".login-model"
+                                                       class="text-dark"><i class="fa fa-lock m-r-5"></i>
+                                                        Already have an account?</a>
                                                 </div>
 
                                             </div>

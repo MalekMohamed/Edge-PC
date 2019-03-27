@@ -9,8 +9,8 @@
 spl_autoload_register(function ($name) {
     require 'class.' . $name . '.php';
 });
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 class controller extends Chat
@@ -756,7 +756,8 @@ class controller extends Chat
     public function reset_password($username, $email)
     {
         require 'PHPMailer/PHPMailerAutoload.php';
-        $password = $this->get_user_by_name($username)->Password;
+        $password = $this->get_user($username)['User']['Data']['Password'];
+        $token = sha1($username.time().$password).dechex(time()).dechex($username);
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
@@ -775,42 +776,397 @@ class controller extends Chat
         $mail->IsHTML(true);
         $mail->Username = $this->gmail['email'];
         $mail->Password = $this->gmail['password'];
-        $mail->SetFrom($this->server_name . ' - HelpDesk');
-        $mail->Subject = "TopConquer - Password Reset";
+        $mail->SetFrom($this->siteName . ' - Support');
+        $mail->Subject = $this->siteName . ' - Password Reset';
         $mail->Body = '	
         <style>
-        .card {
-    background-color: #36404a;
-}
-.m-b-20 {
-    margin-bottom: 20px !important;
-}
-</style>
-<div style="background-color: #2f2f2e;
-    border-radius: 5px;
-    color: #fff;
-    padding: 10px;">
-<div>
-      <h5 style="margin-bottom: .75rem;
-    margin-top: 1px;
-    font-size: 30px;"><a style="text-decoration: none;
-    color: #ffb300;" href="' . $this->BASE_URL('index.php') . '">' . $this->title . '</a></h5>
-     </div>
-       <p style="color: #fff;">
-     Hello  <span style="color: #ff4d4d!important;
-    margin-bottom: 0;">' . $username . ' </span>,
-	Your account password is <span style="color: #f05050;"> ' . $password . ' </span><br /> 
-	We suggest that you change the password and keep your information safe<br> If you want to change the password Please Click <a style="font-size: 16px;
-    background-color: #2196F3!important;
-    border: 1px solid #5d9cec!important;
-    border-radius: 3px;
-    outline: none!important;
-    padding: 3px;
-    color: #fff;
-    text-decoration: none;" href="' . $this->BASE_URL('Account/Edit') . '">Here</a> <br>Have fun in the Game. <br /><br>
-	PS: DO NOT reply this email. This is a post-only mailing. Replies to this message are not monitored or answered. <br><br>
-	</p>
-	</div>';
+    /* -------------------------------------
+      GLOBAL RESETS
+  ------------------------------------- */
+
+    img {
+        border: none;
+        -ms-interpolation-mode: bicubic;
+        max-width: 100%;
+    }
+
+    body {
+        /* background-color: #868b8c; */
+        font-family: \'Open Sans\', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    table {
+        border-collapse: separate;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        width: 100%;
+    }
+
+    table td {
+        font-family: \'Open Sans\', sans-serif;
+        font-size: 15px;
+        vertical-align: top;
+    }
+    /* -------------------------------------
+      BODY & CONTAINER
+  ------------------------------------- */
+
+    .body {
+        /* background-color: #868b8c; */
+        color: #ffffff;
+        width: 100%;
+    }
+    /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+
+    .container {
+        display: block;
+        Margin: 0 auto !important;
+        /* makes it centered */
+        max-width: 400px;
+        padding: 10px;
+        width: 400px;
+    }
+    /* This should also be a block element, so that it will fill 100% of the .container */
+
+    .content {
+        box-sizing: border-box;
+        display: block;
+        Margin: 0 auto;
+        max-width: 400px;
+        /*padding: 10px;*/
+    }
+    /* -------------------------------------
+      HEADER, FOOTER, MAIN
+  ------------------------------------- */
+
+    .main {
+        background: #3B474A;
+        border: 1px solid #232B2C;
+        border-radius: 3px;
+        width: 100%;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2)
+    }
+
+    .wrapper {
+        box-sizing: border-box;
+        padding: 20px;
+    }
+
+    .footer {
+        clear: both;
+        padding-top: 10px;
+        width: 100%;
+    }
+
+    .footer td,
+    .footer p,
+    .footer span,
+    .footer a {
+        color: #3b474a;
+        font-weight: bold;
+        font-size: 12px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    /* -------------------------------------
+      TYPOGRAPHY
+  ------------------------------------- */
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        color: #ffffff;
+        font-family: \'Open Sans\', sans-serif;
+        font-weight: 400;
+        line-height: 1.5;
+        margin: 0;
+        Margin-bottom: 30px;
+    }
+
+    h1 {
+        font-size: 35px;
+        font-weight: 300;
+        text-align: center;
+        text-transform: capitalize;
+    }
+
+    p,
+    ul,
+    ol {
+        font-family: \'Open Sans\', sans-serif;
+        font-size: 15px;
+        font-weight: normal;
+        margin: 0;
+        Margin-bottom: 15px;
+    }
+
+    p li,
+    ul li,
+    ol li {
+        list-style-position: inside;
+        margin-left: 5px;
+    }
+
+    a {
+        color: #00bbc9;
+        text-decoration: underline;
+    }
+    /* -------------------------------------
+      BUTTONS
+  ------------------------------------- */
+
+    .btn {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .btn>tbody>tr>td {
+        padding-bottom: 15px;
+    }
+
+    .btn table {
+        width: 100%;
+    }
+
+    .btn table td {
+        background-color: #ffffff;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    .btn a,
+    .btn a:hover {
+        background-color: #00bbc9;
+        border: solid 1px #00a8b5;
+        border-radius: 3px;
+        box-sizing: border-box;
+        color: #f2f3f2;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 15px;
+        margin: 0;
+        padding: 10px 15px;
+        text-decoration: none;
+        text-transform: capitalize;
+        width: 100%;
+    }
+
+    .btn-primary table td {
+        background-color: #00bbc9;
+    }
+
+    .btn-primary a {
+        background-color: #00bbc9;
+        border-color: #00a8b5;
+        color: #f2f3f2;
+    }
+    /* -------------------------------------
+      OTHER STYLES THAT MIGHT BE USEFUL
+  ------------------------------------- */
+
+    .last {
+        margin-bottom: 0;
+    }
+
+    .first {
+        margin-top: 0;
+    }
+
+    .align-center {
+        text-align: center;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    .align-left {
+        text-align: left;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    .mt0 {
+        margin-top: 0;
+    }
+
+    .mb0 {
+        margin-bottom: 0;
+    }
+
+    .logo {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .preheader {
+        color: transparent;
+        display: none;
+        height: 0;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        mso-hide: all;
+        visibility: hidden;
+        width: 0;
+    }
+    /* -------------------------------------
+      RESPONSIVE AND MOBILE FRIENDLY STYLES
+  ------------------------------------- */
+
+    @media only screen and (max-width: 620px) {
+        table[class=body] h1 {
+            font-size: 28px !important;
+            margin-bottom: 10px !important;
+        }
+        table[class=body] p,
+        table[class=body] ul,
+        table[class=body] ol,
+        table[class=body] td,
+        table[class=body] span,
+        table[class=body] a {
+            font-size: 16px !important;
+        }
+        table[class=body] .wrapper,
+        table[class=body] .article {
+            padding: 10px !important;
+        }
+        table[class=body] .content {
+            padding: 0 !important;
+        }
+        table[class=body] .container {
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        table[class=body] .main {
+            border-left-width: 0 !important;
+            border-radius: 0 !important;
+            border-right-width: 0 !important;
+        }
+        table[class=body] .btn table {
+            width: 100% !important;
+        }
+        table[class=body] .btn a {
+            width: 100% !important;
+        }
+        table[class=body] .img-responsive {
+            height: auto !important;
+            max-width: 100% !important;
+            width: auto !important;
+        }
+    }
+    /* -------------------------------------
+      PRESERVE THESE STYLES IN THE HEAD
+  ------------------------------------- */
+
+    @media all {
+        .ExternalClass {
+            width: 100%;
+        }
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+            line-height: 100%;
+        }
+        .apple-link a {
+            color: inherit !important;
+            font-family: inherit !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+            text-decoration: none !important;
+        }
+        .btn-primary table td:hover {
+            background-color: #00bbc9 !important;
+        }
+        .btn-primary a:hover {
+            background-color: #00bbc9 !important;
+            border-color: #00a8b5 !important;
+        }
+    }
+</style><table border="0" cellpadding="0" cellspacing="0" class="body">
+    <tr>
+        <td>&nbsp;</td>
+        <td class="container">
+            <div class="content">
+
+                <!-- START CENTERED WHITE CONTAINER -->
+               
+                <table class="main">
+
+                    <!-- START MAIN CONTENT AREA -->
+                    <tr>
+                        <td></td>
+                        <td width="400" class="wrapper">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <p style="color:#FFFFFF">Reset your password?</p>
+                                        <p style="color:#FFFFFF">If you requested a password reset for '.$username.', click the button below. If you didn\'t make this request, ignore this email.</p>
+                                        <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table border="0" cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td> <a href="'.$this->BASE_URL('account/reset/'.$token).'" target="_blank">Reset password</a> </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <p style="color:#FFFFFF">Getting a lot of password reset emails?
+You can change your <a href="'.$this->BASE_URL('account/settings').'" >account settings</a> to require personal information to reset your password.
+</p>
+                                        <p style="color:#FFFFFF">Thanks,Your friends at '.$this->siteName.'.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <!-- END MAIN CONTENT AREA -->
+                </table>
+
+                <!-- START FOOTER -->
+                <div class="footer">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td align="left" class="content-block">
+                                <span class="apple-link">+02 011 5018 8676 </span>
+                            </td>
+                            <td align="right" class="content-block">
+                                <span class="apple-link">'.$this->gmail['email'].'</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- END FOOTER -->
+
+                <!-- END CENTERED WHITE CONTAINER -->
+            </div>
+        </td>
+        <td>&nbsp;</td>
+    </tr>
+</table>';
         $mail->AddAddress($email);
         if ($mail->send()) {
             $length = strlen($email) / 2;
@@ -821,38 +1177,26 @@ class controller extends Chat
             $response['field'] = 'All';
             $response['status'] = 'error';
         }
-        echo json_encode($this->response);
+        return $this->response;
     }
-
     private function resetpassword()
     {
-        $username = filter_var($_POST['Username'], FILTER_SANITIZE_STRING);
         $email = filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
-        $ans = filter_var($_POST['Answer'], FILTER_SANITIZE_STRING);
-        $ques = filter_var($_POST['Question'], FILTER_SANITIZE_STRING);
-        $check_user = $this->check_username($username);
-        if ($check_user != 1) {
+        $check_email= $this->conn->prepare("SELECT Email,Username FROM accounts WHERE Email = ?");
+        $check_email->execute(array($email));
+        $data = $check_email->fetch();
+        if ($check_email->rowCount() != 1) {
             $this->response['status'] = 'error';
-            $this->response['msg'] = 'Username not found';
-            $this->response['field'] = '#register_username2';
+            $this->response['msg'] = 'Email not found';
+            $this->response['field'] = '#reset_email';
         } else {
-            $question = $this->select($this->account, 'accounts', $this->account_columns, array('Username = ?', 'Question = ?'), array($username, $ques))->rowCount();
-            $answer = $this->select($this->account, 'accounts', $this->account_columns, array('Username = ?', 'Answer = ?'), array($username, $ans))->rowCount();
-            $email_check = $this->select($this->account, 'accounts', $this->account_columns, array('Username = ?', 'Email = ?'), array($username, $email))->rowCount();
-            if ($question != 1) {
-                $this->response['field'] = '#register_question';
-                $this->response['status'] = 'error';
-                $this->response['msg'] = 'Incorrect Question';
-            } elseif ($answer != 1) {
-                $this->response['field'] = '#register_answer';
-                $this->response['status'] = 'error';
-                $this->response['msg'] = 'Incorrect Answer';
-            } elseif ($email_check != 1) {
-                $this->response['field'] = '#register_email';
-                $this->response['status'] = 'error';
-                $this->response['msg'] = 'Incorrect Email';
+            if ($this->reset_password($data['Username'], $email)['status']) {
+                $this->response['status'] = 'success';
+                $this->response['msg'] = 'Email sent to ' . $data['Username'] . ' .Please check your inbox and Spam messages';
             } else {
-                $this->reset_password($username, $email);
+                $response['msg'] = 'Error sending your email, please contact an admin.';
+                $response['field'] = 'All';
+                $response['status'] = 'error';
             }
         }
         echo json_encode($this->response);
@@ -867,7 +1211,7 @@ class controller extends Chat
         $data['Mobile'] = filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING);
         if (!empty($data['Password']) && !empty($data['Username']) && !empty($data['Email']) && !empty($data['Country']) && !empty($data['Mobile'])) {
             $user = $this->Object($this->get_user($data['Username']));
-            $check_email = $query = $this->select('accounts', '*', array('Email = ?'), $data['Email']);
+            $check_email = $this->select('accounts', '*', array('Email = ?'), $data['Email']);
             if (!preg_match("/^([0-9a-zA-Z]+)$/", $data['Password'])) {
                 $this->response['msg'] = 'Password Only letters from A-a to Z-z and numbers, length of 3 to 32 characters';
                 $this->response['status'] = 'error';
