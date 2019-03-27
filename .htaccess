@@ -32,6 +32,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^Category/(.*)$ index.php?public/client/pages=items&category=$1
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^search/(.*)$ index.php?public/client/pages=search&data=$1
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?public/client/pages=$1
 
 <ifModule mod_gzip.c>

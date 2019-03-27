@@ -498,9 +498,13 @@ public function getReports($type , $Id = null)
         echo json_encode($this->response);
     }
 
-    public function search()
+    public function search($data = null)
     {
-        $data = filter_var(htmlentities(strip_tags($_POST['search'])), FILTER_SANITIZE_STRING);
+        if ($data == null) {
+            $data = filter_var(htmlentities(strip_tags($_POST['search'])), FILTER_SANITIZE_STRING);
+        } else {
+            $data = filter_var(htmlentities(strip_tags($data)), FILTER_SANITIZE_STRING);
+        }
         $arr = explode(' ', $data);
         $items = array();
         if (in_array('SSD', $arr) || in_array('ssd', $arr) || in_array('Ssd', $arr) || in_array('drive', $arr) || in_array('Drive', $arr)) {

@@ -22,6 +22,7 @@ $route_array = array(
     'home' => 'public/client/pages',
     '403' => 'public/client/pages',
     'products' => 'public/client/pages',
+    'search' => 'public/client/pages',
     '404' => 'public/client/pages',
 );
 $files['account'] = array(
