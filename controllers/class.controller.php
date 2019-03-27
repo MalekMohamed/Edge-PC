@@ -9,7 +9,7 @@
 spl_autoload_register(function ($name) {
     require 'class.' . $name . '.php';
 });
-ini_set('display_errors',0);
+ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
@@ -104,8 +104,8 @@ class controller extends Chat
                     break;
                 case "changeTheme":
                     $this->ChangeTheme();
-                    break; 
-                    case "brands":
+                    break;
+                case "brands":
                     $this->CategoryBrands();
                     break;
             }
@@ -113,7 +113,8 @@ class controller extends Chat
             die();
         }
     }
-   public function updateReport($id, $status)
+
+    public function updateReport($id, $status)
     {
         session_start();
         if (isset($_SESSION['Staff'])) {
@@ -124,7 +125,8 @@ class controller extends Chat
             return $query->rowCount();
         }
     }
-public function getReports($type , $Id = null)
+
+    public function getReports($type, $Id = null)
     {
         session_start();
         if (isset($_SESSION['Staff'])) {
@@ -134,13 +136,14 @@ public function getReports($type , $Id = null)
                 $query->execute(array($Id));
                 return $query->fetchAll();
             } elseif ($type == 'Item' && !empty($Id)) {
-                
+
                 $query = $this->conn->prepare("SELECT * FROM reports WHERE item = ?");
                 $query->execute(array($Id));
                 return $query->fetchAll();
             }
         }
     }
+
     private function CategoryBrands()
     {
         $cate = filter_var($_POST['cate'], FILTER_SANITIZE_STRING);
@@ -154,6 +157,7 @@ public function getReports($type , $Id = null)
         }
         echo json_encode($cateData);
     }
+
     private function getUser()
     {
         session_start();
@@ -498,25 +502,19 @@ public function getReports($type , $Id = null)
         echo json_encode($this->response);
     }
 
-    public function search($data = null)
+    public function search()
     {
-        if ($data == null) {
-            $data = filter_var(htmlentities(strip_tags($_POST['search'])), FILTER_SANITIZE_STRING);
-        } else {
-            $data = filter_var(htmlentities(strip_tags($data)), FILTER_SANITIZE_STRING);
-        }
+        $data = filter_var(htmlentities(strip_tags($_POST['search'])), FILTER_SANITIZE_STRING);
         $arr = explode(' ', $data);
         $items = array();
         if (in_array('SSD', $arr) || in_array('ssd', $arr) || in_array('Ssd', $arr) || in_array('drive', $arr) || in_array('Drive', $arr)) {
             array_push($arr, 'Solid state drive');
-        }
-        elseif (in_array('Solid state drive', $arr) || in_array('solid state drive', $arr) || in_array('solid', $arr) | in_array('Solid', $arr) || in_array('state', $arr) || in_array('State', $arr)) {
+        } elseif (in_array('Solid state drive', $arr) || in_array('solid state drive', $arr) || in_array('solid', $arr) | in_array('Solid', $arr) || in_array('state', $arr) || in_array('State', $arr)) {
             array_push($arr, 'SSD');
         }
         if (in_array('Hard disk', $arr) || in_array('disk', $arr) || in_array('hard', $arr) || in_array('drive', $arr) || in_array('Drive', $arr)) {
             array_push($arr, 'HDD');
-        }
-        elseif (in_array('HDD', $arr) || in_array('hdd', $arr) || in_array('Hdd', $arr)) {
+        } elseif (in_array('HDD', $arr) || in_array('hdd', $arr) || in_array('Hdd', $arr)) {
             array_push($arr, 'Hard disk');
         }
         $i = 0;
@@ -569,6 +567,7 @@ public function getReports($type , $Id = null)
 
         }
         echo json_encode($this->response);
+
     }
 
     private function remove_item()
