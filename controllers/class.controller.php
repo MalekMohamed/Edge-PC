@@ -130,32 +130,36 @@ class controller extends Chat
     private function rate()
     {
         session_start();
-        $data['id'] = filter_var(numhash($_POST['item']), FILTER_SANITIZE_NUMBER_INT);
-        $value = filter_var($_POST['value'], FILTER_SANITIZE_NUMBER_INT);
-        $item = $this->get_items($data)[0];
-        $check_rate = $this->conn->prepare("SELECT * FROM rates WHERE user = ? AND item = ?");
-        $check_rate->execute(array($_SESSION['account'], $data['id']));
-        if (empty($item)) {
-            $this->response['msg'] = 'Item not found';
+        if (isset($_SESSION['account'])) {
+            $data['id'] = filter_var(numhash($_POST['item']), FILTER_SANITIZE_NUMBER_INT);
+            $value = filter_var($_POST['value'], FILTER_SANITIZE_NUMBER_INT);
+            $item = $this->get_items($data)[0];
+            $check_rate = $this->conn->prepare("SELECT * FROM rates WHERE user = ? AND item = ?");
+            $check_rate->execute(array($_SESSION['account'], $data['id']));
+            if (empty($item)) {
+                $this->response['msg'] = 'Item not found';
+                $this->response['status'] = 'error';
+            } elseif (empty($value)) {
+                $this->response['msg'] = 'Select the stars first';
+                $this->response['status'] = 'error';
+            } elseif ($check_rate->rowCount() != 0) {
+                $query = $this->conn->prepare('UPDATE rates SET value = ? WHERE id = ?');
+                $query->execute(array($value, $check_rate->fetch()['id']));
+                $this->response['msg'] = 'Thanks for your rate';
+                $this->response['status'] = 'success';
+            } else {
+                $query = $this->conn->prepare("INSERT INTO rates (user,item,value,seller) VALUES (:user,:item,:value,:seller)");
+                $query->execute(array(
+                    'user' => $_SESSION['account'],
+                    'item' => $data['id'],
+                    'value' => $value,
+                    'seller' => $item['User']
+                ));
+                $this->response['msg'] = 'Thanks for your rate';
+                $this->response['status'] = 'success';
+            }
+            $this->response['msg'] = 'You must be logged in to do this action';
             $this->response['status'] = 'error';
-        } elseif (empty($value)) {
-            $this->response['msg'] = 'Select the stars first';
-            $this->response['status'] = 'error';
-        } elseif ($check_rate->rowCount() != 0) {
-            $query = $this->conn->prepare('UPDATE rates SET value = ? WHERE id = ?');
-            $query->execute(array($value, $check_rate->fetch()['id']));
-            $this->response['msg'] = 'Thanks for your rate';
-            $this->response['status'] = 'success';
-        } else {
-            $query = $this->conn->prepare("INSERT INTO rates (user,item,value,seller) VALUES (:user,:item,:value,:seller)");
-            $query->execute(array(
-                'user' => $_SESSION['account'],
-                'item' => $data['id'],
-                'value' => $value,
-                'seller' => $item['User']
-            ));
-            $this->response['msg'] = 'Thanks for your rate' . $check_rate->rowCount();
-            $this->response['status'] = 'success';
         }
         echo json_encode($this->response);
     }
