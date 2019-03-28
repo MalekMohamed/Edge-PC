@@ -8,9 +8,14 @@
  */
 class account extends Store
 {
-    public static function State($user, $state)
+    public static function State($user, $rate)
     {
-        switch ($state) {
+        if ($rate >= 3 ) {
+            return '<span data-toggle="tooltip" data-placement="right" data-original-title="Trusted" data-rate="'.$rate.'" class="text-primary">' . $user . ' <i class="fa fa-check-square"></i></span>';
+        } else {
+            return $user;
+        }
+        /*switch ($state) {
             case 0:
                 return $user;
                 break;
@@ -23,7 +28,7 @@ class account extends Store
             case 3:
                 return '<span data-toggle="tooltip" data-placement="right" data-original-title="Moderator" class="text-success">' . $user . ' <i class="fa fa-user-secret"></i></span>';
                 break;
-        }
+        }*/
     }
 
     public function get_user($username)

@@ -9,8 +9,8 @@
 spl_autoload_register(function ($name) {
     require 'class.' . $name . '.php';
 });
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 class controller extends Chat
@@ -19,19 +19,6 @@ class controller extends Chat
     private $request;
     private $response = array();
 
-    public function file_log($file_dir, $data)
-    {
-        $date = date("d-M-Y h:i a");
-        $report = file_get_contents($file_dir);
-        $report .= 'Date [' . $date . "]\n";
-        foreach ($data as $k => $v) {
-            if ($k != 'public/views') {
-                $report .= "-[$k] = [$v]\n";
-            }
-        }
-        $report .= "--------------------------------------------- \n";
-        file_put_contents($file_dir, $report);
-    }
 
     public function __construct()
     {
@@ -108,10 +95,69 @@ class controller extends Chat
                 case "brands":
                     $this->CategoryBrands();
                     break;
+                case "rate":
+                    $this->rate();
+                    break;
             }
         } else {
             die();
         }
+    }
+
+    public function ItemRates($id)
+    {
+        $query = $this->conn->prepare("SELECT * FROM rates WHERE item = ?");
+        $query->execute(array($id));
+        $total = 0;
+        foreach ($query->fetchAll() as $value) {
+            $total = $value['value'] + $total;
+        }
+        $calcuate = $total / $query->rowCount();
+        return floor($calcuate);
+    }
+    public function UserRates($id)
+    {
+        $query = $this->conn->prepare("SELECT * FROM rates WHERE seller = ?");
+        $query->execute(array($id));
+        $total = 0;
+        foreach ($query->fetchAll() as $value) {
+            $total = $value['value'] + $total;
+        }
+        $calcuate = $total / $query->rowCount();
+        return floor($calcuate);
+    }
+
+    private function rate()
+    {
+        session_start();
+        $data['id'] = filter_var(numhash($_POST['item']), FILTER_SANITIZE_NUMBER_INT);
+        $value = filter_var($_POST['value'], FILTER_SANITIZE_NUMBER_INT);
+        $item = $this->get_items($data)[0];
+        $check_rate = $this->conn->prepare("SELECT * FROM rates WHERE user = ? AND item = ?");
+        $check_rate->execute(array($_SESSION['account'], $data['id']));
+        if (empty($item)) {
+            $this->response['msg'] = 'Item not found';
+            $this->response['status'] = 'error';
+        } elseif (empty($value)) {
+            $this->response['msg'] = 'Select the stars first';
+            $this->response['status'] = 'error';
+        } elseif ($check_rate->rowCount() != 0) {
+            $query = $this->conn->prepare('UPDATE rates SET value = ? WHERE id = ?');
+            $query->execute(array($value, $check_rate->fetch()['id']));
+            $this->response['msg'] = 'Thanks for your rate';
+            $this->response['status'] = 'success';
+        } else {
+            $query = $this->conn->prepare("INSERT INTO rates (user,item,value,seller) VALUES (:user,:item,:value,:seller)");
+            $query->execute(array(
+                'user' => $_SESSION['account'],
+                'item' => $data['id'],
+                'value' => $value,
+                'seller' => $item['User']
+            ));
+            $this->response['msg'] = 'Thanks for your rate' . $check_rate->rowCount();
+            $this->response['status'] = 'success';
+        }
+        echo json_encode($this->response);
     }
 
     public function updateReport($id, $status)
@@ -757,7 +803,7 @@ class controller extends Chat
     {
         require 'PHPMailer/PHPMailerAutoload.php';
         $password = $this->get_user($username)['User']['Data']['Password'];
-        $token = sha1($username.time().$password).dechex(time()).dechex($username);
+        $token = sha1($username . time() . $password) . dechex(time()) . dechex($username);
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
@@ -1116,7 +1162,7 @@ class controller extends Chat
                                 <tr>
                                     <td>
                                         <p style="color:#FFFFFF">Reset your password?</p>
-                                        <p style="color:#FFFFFF">If you requested a password reset for '.$username.', click the button below. If you didn\'t make this request, ignore this email.</p>
+                                        <p style="color:#FFFFFF">If you requested a password reset for ' . $username . ', click the button below. If you didn\'t make this request, ignore this email.</p>
                                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                                             <tbody>
                                             <tr>
@@ -1124,7 +1170,7 @@ class controller extends Chat
                                                     <table border="0" cellpadding="0" cellspacing="0">
                                                         <tbody>
                                                         <tr>
-                                                            <td> <a href="'.$this->BASE_URL('account/reset/'.$token).'" target="_blank">Reset password</a> </td>
+                                                            <td> <a href="' . $this->BASE_URL('account/reset/' . $token) . '" target="_blank">Reset password</a> </td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -1133,9 +1179,9 @@ class controller extends Chat
                                             </tbody>
                                         </table>
                                         <p style="color:#FFFFFF">Getting a lot of password reset emails?
-You can change your <a href="'.$this->BASE_URL('account/settings').'" >account settings</a> to require personal information to reset your password.
+You can change your <a href="' . $this->BASE_URL('account/settings') . '" >account settings</a> to require personal information to reset your password.
 </p>
-                                        <p style="color:#FFFFFF">Thanks,Your friends at '.$this->siteName.'.</p>
+                                        <p style="color:#FFFFFF">Thanks,Your friends at ' . $this->siteName . '.</p>
                                     </td>
                                 </tr>
                             </table>
@@ -1154,7 +1200,7 @@ You can change your <a href="'.$this->BASE_URL('account/settings').'" >account s
                                 <span class="apple-link">+02 011 5018 8676 </span>
                             </td>
                             <td align="right" class="content-block">
-                                <span class="apple-link">'.$this->gmail['email'].'</span>
+                                <span class="apple-link">' . $this->gmail['email'] . '</span>
                             </td>
                         </tr>
                     </table>
@@ -1179,10 +1225,11 @@ You can change your <a href="'.$this->BASE_URL('account/settings').'" >account s
         }
         return $this->response;
     }
+
     private function resetpassword()
     {
         $email = filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
-        $check_email= $this->conn->prepare("SELECT Email,Username FROM accounts WHERE Email = ?");
+        $check_email = $this->conn->prepare("SELECT Email,Username FROM accounts WHERE Email = ?");
         $check_email->execute(array($email));
         $data = $check_email->fetch();
         if ($check_email->rowCount() != 1) {

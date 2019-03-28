@@ -19,7 +19,6 @@ if (!empty($item)) {
         ?>
         <link href="<?php echo $app->BASE_URL('public/assets/css/smoothproducts.css'); ?>"
               rel="stylesheet" type="text/css">
-
         <div class="row ajax-content">
             <div class="col-xs-12">
                 <div class="card-box product-detail-box">
@@ -27,21 +26,23 @@ if (!empty($item)) {
                         <div class="col-sm-4">
                             <div class="sp-loading"><img
                                         src="<?php echo $app->BASE_URL('public/assets/images/sp-loading.gif'); ?>"
-                                        alt=""><br>LOADING
-                                IMAGES
+                                        alt=""><br>LOADING IMAGES
                             </div>
                             <div class="sp-wrap">
-                                <a href="<?php echo $app->BASE_URL('public/uploads/images/' . numhash($item['ID']) . '/'.$ad_images[0]); ?>"><img
-                                            src="<?php echo $app->BASE_URL('public/uploads/images/' . numhash($item['ID']) . '/'.$ad_images[0]); ?>"
+                                <a href="<?php echo $app->BASE_URL('public/uploads/images/' . numhash($item['ID']) . '/' . $ad_images[0]); ?>"><img
+                                            src="<?php echo $app->BASE_URL('public/uploads/images/' . numhash($item['ID']) . '/' . $ad_images[0]); ?>"
                                             alt=""></a>
                             </div>
+
                         </div>
 
                         <div class="col-sm-8">
                             <div class="product-right-info">
                                 <h2 class="price-title font-35 text-white"><b><?php echo $item['Name']; ?></b></h2>
-                                <h3 class="pull-right text-danger" style="margin-top: -40px"><b><?php echo number_format($item['Price']); ?> L.E</b></h3>
-                                <h5 class="m-t-20"><b>By <?php echo account::State($item['User'],$user['State']);?></b></h5>
+                                <h3 class="pull-right text-danger" style="margin-top: -40px">
+                                    <b><?php echo number_format($item['Price']); ?> L.E</b></h3>
+                                <h5 class="m-t-20">
+                                    <b>By <?php echo account::State($item['User'], $app->UserRates($item['User'])); ?></b></h5>
                                 <hr>
                                 <table class="table table-hover m-0">
                                     <thead>
@@ -55,6 +56,9 @@ if (!empty($item)) {
                                             <?php
                                         }
                                         ?>
+                                        <th>
+                                            Rating
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -64,10 +68,46 @@ if (!empty($item)) {
                                         <?php
                                         if (key(Store::$category_data[$item['Category']]) != 'Brands') {
                                             ?>
-                                            <td><?php echo $item['extData']; ?></td>
+                                            <td><?php echo !empty($item['extData']) ? $item['extData'] : Store::$category_data[$item['Category']][key(Store::$category_data[$item['Category']])][0]; ?></td>
                                             <?php
                                         }
                                         ?>
+
+                                        <td>
+                                            <div class='rating-stars'
+                                                 data-total="<?php echo number_format($app->ItemRates($item['ID'])); ?>"
+                                                 data-item="<?php echo numhash($item['ID']); ?>">
+                                                <ul id='stars'>
+                                                    <li class='star star-1' title='Poor' data-value='1'>
+                                                        <i class='fa fa-star fa-fw'></i>
+                                                    </li>
+                                                    <li class='star star-2' title='Fair' data-value='2'>
+                                                        <i class='fa fa-star fa-fw'></i>
+                                                    </li>
+                                                    <li class='star star-3' title='Good' data-value='3'>
+                                                        <i class='fa fa-star fa-fw'></i>
+                                                    </li>
+                                                    <li class='star star-4' title='Excellent' data-value='4'>
+                                                        <i class='fa fa-star fa-fw'></i>
+                                                    </li>
+                                                    <li class='star star-5' title='WOW!!!' data-value='5'>
+                                                        <i class='fa fa-star fa-fw'></i>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <script type="application/javascript">
+                                            function showRates(value) {
+                                                $('#stars').children('li.star').each(function (e) {
+                                                    if (e <= value) {
+                                                        $('.star-' + e).addClass('selected');
+                                                    } else {
+                                                        $('.star-' + e).removeClass('hover');
+                                                    }
+                                                });
+                                            }
+                                            showRates($('.rating-stars').data('total'));
+                                        </script>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -107,6 +147,7 @@ if (!empty($item)) {
                                     <?php
                                 }
                                 ?>
+
                                 <div class="m-t-30">
                                     <a data-toggle="tooltip" data-placement="top" title=""
                                        data-animation="fadein"
@@ -117,11 +158,14 @@ if (!empty($item)) {
                                        class="btn-danger btn on-default report-item-button"><i
                                                 class="fa fa-exclamation-triangle"></i></a>
 
-                                    <a data-toggle="tooltip" data-placement="top" title="" href="<?php echo $app->BASE_URL('account/messenger/'.numhash($item['ID']).'-'.$item['User']);?>"
-                                       data-original-title="Contact User" class="btn btn-white waves-effect waves-light m-l-10">
+                                    <a data-toggle="tooltip" data-placement="top" title=""
+                                       href="<?php echo $app->BASE_URL('account/messenger/' . numhash($item['ID']) . '-' . $item['User']); ?>"
+                                       data-original-title="Contact User"
+                                       class="btn btn-white waves-effect waves-light m-l-10">
                                                      <span class="btn-label"><i class="fa fa-envelope-o"></i>
                                                    </span>Send Message
                                     </a>
+
                                 </div>
                             </div>
                         </div>
@@ -154,7 +198,8 @@ if (!empty($item)) {
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <textarea name="reason_text" maxlength="255" id="reason_text" placeholder="additional comment" class="form-control"></textarea>
+                                    <textarea name="reason_text" maxlength="255" id="reason_text"
+                                              placeholder="additional comment" class="form-control"></textarea>
                                 </div>
                         </div>
 
@@ -191,10 +236,15 @@ if (!empty($item)) {
                             <form action="" method="POST" class="contact-form">
                                 <input name="id" type="hidden" value="<?php echo numhash($item['ID']); ?>">
                                 <div class="form-group">
-                                    <button type="button" onclick="$(this).text('0<?php echo $user['Mobile'];?>');" class="btn btn-block btn-lg btn-inverse waves-effect waves-light">Show Mobile Number</button>
+                                    <button type="button" onclick="$(this).text('0<?php echo $user['Mobile']; ?>');"
+                                            class="btn btn-block btn-lg btn-inverse waves-effect waves-light">Show
+                                        Mobile Number
+                                    </button>
                                 </div>
                                 <div class="form-group">
-                                    <textarea name="contact_msg" maxlength="255" id="contact_msg" placeholder="Enter your message here" class="form-control">Hello <?php echo $item['User'];?>, i want to buy ( <?php echo $item['Name']; ?> ). &#13;&#10;Please contact me asap.</textarea>
+                                    <textarea name="contact_msg" maxlength="255" id="contact_msg"
+                                              placeholder="Enter your message here"
+                                              class="form-control">Hello <?php echo $item['User']; ?>, i want to buy ( <?php echo $item['Name']; ?> ). &#13;&#10;Please contact me asap.</textarea>
                                 </div>
                         </div>
 
@@ -243,7 +293,8 @@ if (!empty($item)) {
                             ?>
                             <div class="col-md-4 col-xl-3 static-products">
                                 <div class="product-list-box thumb">
-                                    <a class="image-popup" href="<?php echo $app->BASE_URL('Products/' . numhash($ad['ID'])); ?>">
+                                    <a class="image-popup"
+                                       href="<?php echo $app->BASE_URL('Products/' . numhash($ad['ID'])); ?>">
                                         <img src="<?php echo $app->BASE_URL($ad_image); ?>"
                                              alt="product-pic" class="thumb-img"></a>
                                     <div class="price-tag">
@@ -273,8 +324,9 @@ if (!empty($item)) {
     <?php } else {
         $url = $app->BASE_URL('403');
         header("Location: $url");
-    } } else {
+    }
+} else {
     $url = $app->BASE_URL('404');
     header("Location: $url");
-}  ?>
+} ?>
 

@@ -10,46 +10,47 @@ class Store extends Config
 {
     public static $category_array = array('Ram', 'Case', 'GPU', 'CPU', 'MotherBoard', 'Storage', 'Cooling - Fans', 'Monitor', 'PowerSupply', 'Laptops', 'Bundle', 'Accessory', 'Others');
     public static $Brands = array('Atech', 'Acer', 'Adata', 'AFOX', 'AMD', 'Antec', 'Aopen', 'Apacer', 'APC', 'Apple', 'Arctic', 'ASRock', 'ASUS', 'Auvio', 'Belkin', 'BenQ', 'Biostar', 'Bitfenix', 'Brother', 'Canon', 'Cherry', 'CISCO', 'Cooler', 'Master', 'Corsair', 'Creative', 'Crucial', 'CRYORIG', 'D-link', 'Deepcool', 'Dell', 'Dolphin', 'ECS', 'ELITEGROUP', 'Edimax', 'Enermax', 'EVGA', 'FSP', 'Fujitsu', 'GSkill', 'Gainward', 'Galax', 'Galaxy', 'GAMDIAS', 'Gamma', 'Genius', 'Gigabyte', 'HEC', 'HGST', 'HIS', 'HP', 'HTC', 'Huawei', 'iLuv', 'Infosec', 'InnoD', 'intel', 'Kaspersky', 'Lab', 'Kingston', 'Lacie', 'Lenovo', 'Lexar', 'LG', 'Linksys', 'Liteon', 'Logitech', 'Manhattan', 'Manli', 'Maxtor', 'McAfee', 'Microsoft', 'Miracle-DL', 'MSI', 'Netgear', 'Netis', 'noctua', 'NZXT', 'OKI', 'Palit', 'Philips', 'Pioneer', 'Plextor', 'PNY', 'powercolor', 'Raidmax', 'rapoo', 'Razer', 'REDRAGON', 'Ricoh', 'ROCCAT', 'Samsung', 'Sandisk', 'Sapphire', 'Seagate', 'Seasonic', 'Silicon', 'Power', 'SilverStone', 'Sollatek', 'Sony', 'SPEEDLINK', 'steelseries', 'SystemMax', 'Team Group', 'Tenda', 'Tevii', 'Thermaltake', 'Thomson', 'TIGER', 'Tornado', 'Toshiba', 'TOTOLINK', 'TP-Link', 'Transcend', 'Viewsonic', 'VisionPlus', 'Wacom', 'Western', 'Digital', 'XFX', 'Zalman', 'Zotac');
-public static $category_data = array(
+    public static $category_data = array(
         'MotherBoard' => array(
-            'Chipset' => array('Intel','AMD'),
-            'Brands' => array('Gigabyte' , 'Asus' ,'MSI' , 'ASRock','EVGA')
+            'Chipset' => array('Intel', 'AMD'),
+            'Brands' => array('Gigabyte', 'Asus', 'MSI', 'ASRock', 'EVGA')
         ),
         'Ram' => array(
-            'Brands' => array('G.Skill','Kingston' , 'AData','Gigabyte','Crucial','Corsair')
+            'Brands' => array('G.Skill', 'Kingston', 'AData', 'Gigabyte', 'Crucial', 'Corsair')
         ),
         'PowerSupply' => array(
-            'Brands' => array('Bitfenix' , 'Cooler Master','Corsair','EVGA','FSP','Gigabyte','Gamma','HEC','Seasonic','Thermaltake','XFX','NZXT','Cougar')
+            'Brands' => array('Bitfenix', 'Cooler Master', 'Corsair', 'EVGA', 'FSP', 'Gigabyte', 'Gamma', 'HEC', 'Seasonic', 'Thermaltake', 'XFX', 'NZXT', 'Cougar')
         ),
         'CPU' => array(
-            'Brands' => array('Intel','AMD')
+            'Brands' => array('Intel', 'AMD')
         ),
         'GPU' => array(
-            'Chipset' => array('Nvidia','AMD'),
-            'Brands' => array('Asus','EVGA','AFOX','Galax','Gigabyte','MSI','Zotac','Sapphire','PNY','XFX','Palit','Manli','HIS')
+            'Chipset' => array('Nvidia', 'AMD'),
+            'Brands' => array('Asus', 'EVGA', 'AFOX', 'Galax', 'Gigabyte', 'MSI', 'Zotac', 'Sapphire', 'PNY', 'XFX', 'Palit', 'Manli', 'HIS')
         ),
         'Case' => array(
-            'Brands' => array('Bitfenix','Cooler Master','Gamma','Gigabyte','HEC','NZXT','Thermaltake','Corsair')
+            'Brands' => array('Bitfenix', 'Cooler Master', 'Gamma', 'Gigabyte', 'HEC', 'NZXT', 'Thermaltake', 'Corsair')
         ),
         'Cooling - Fans' => array(
-            'Brands' => array('Bitfenix','Cooler Master','FSP','Gigabyte','GAMDIAS','NZXT','Thermaltake','Corsair')
+            'Brands' => array('Bitfenix', 'Cooler Master', 'FSP', 'Gigabyte', 'GAMDIAS', 'NZXT', 'Thermaltake', 'Corsair')
         ),
         'Monitor' => array(
-            'Panel' => array('IPS','LED','PLS','VA','TN'),
-            'Brands' => array('Asus','BenQ','Dell','HP','MSI','LG','Samsung','Corsair')
+            'Panel' => array('IPS', 'LED', 'PLS', 'VA', 'TN'),
+            'Brands' => array('Asus', 'BenQ', 'Dell', 'HP', 'MSI', 'LG', 'Samsung', 'Corsair')
         ),
         'Storage' => array(
-            'Size' => array('SSD','External','HDD','2.5"','3.5"'),
-            'Brands' => array('AData','Crucial','Gigabyte','intel','KingSton','LG','Samsung','Corsair','Seagate','Team Group','Western Digital','Transcend','Toshiba','Silicon Power','Liteon')
+            'Size' => array('HDD', 'NVMe', 'M.2', 'External', '2.5 HDD"', '3.5"', '2.5" SSD'),
+            'Brands' => array('AData', 'Crucial', 'Gigabyte', 'intel', 'KingSton', 'LG', 'Samsung', 'Corsair', 'Seagate', 'Team Group', 'Western Digital', 'Transcend', 'Toshiba', 'Silicon Power', 'Liteon')
         ),
         'Laptop' => array(
-            'Brands' => array('Apple','Dell','HP','Hyundai Technology','Kingston','Lenovo','Toshiba','Western Digital')
+            'Brands' => array('Apple', 'Dell', 'HP', 'Hyundai Technology', 'Kingston', 'Lenovo', 'Toshiba', 'Western Digital')
         ),
         'Accessory' => array(
-            'Device' => array('Headsets','Keyboard','Mouse','Keyboard & Mouse Combos'),
-            'Brands' => array('A4tech','ASUS','Cooler Master','Corsair','G.Skill','GAMDIAS','Genius','Gigabyte','HEC','HP','Kingston','Logitech','MSI','Razer','ROCCAT','Steelseries','Thermaltake')
+            'Device' => array('Headsets', 'Keyboard', 'Mouse', 'Keyboard & Mouse Combos'),
+            'Brands' => array('A4tech', 'ASUS', 'Cooler Master', 'Corsair', 'G.Skill', 'GAMDIAS', 'Genius', 'Gigabyte', 'HEC', 'HP', 'Kingston', 'Logitech', 'MSI', 'Razer', 'ROCCAT', 'Steelseries', 'Thermaltake')
         ),
     );
+
     public static function status($state)
     {
         switch ($state) {
@@ -70,7 +71,8 @@ public static $category_data = array(
                 break;
         }
     }
-public static function reportsStates($state)
+
+    public static function reportsStates($state)
     {
         switch ($state) {
             case 0:
@@ -84,6 +86,7 @@ public static function reportsStates($state)
                 break;
         }
     }
+
     public function getItems($page)
     {
         $per_page = $this->per_page;
@@ -149,10 +152,10 @@ public static function reportsStates($state)
                 $brand = '';
             }
             if (!empty($brand) && !empty($cate)) {
-                $query = $this->conn->prepare('SELECT * FROM store WHERE Category = ? AND Brand = ? '.$stat.' ORDER BY  ' . $sort . $limit);
+                $query = $this->conn->prepare('SELECT * FROM store WHERE Category = ? AND Brand = ? ' . $stat . ' ORDER BY  ' . $sort . $limit);
                 $query->execute(array($cate, $brand));
             } else {
-                $query = $this->conn->prepare('SELECT * FROM store WHERE Category = ? OR ID = ? OR Name = ? OR Brand = ? OR User = ? '.$stat.' ORDER BY  ' . $sort . $limit);
+                $query = $this->conn->prepare('SELECT * FROM store WHERE Category = ? OR ID = ? OR Name = ? OR Brand = ? OR User = ? ' . $stat . ' ORDER BY  ' . $sort . $limit);
                 $query->execute(array($cate, $id, $name, $brand, $user));
             }
             return $query->fetchAll();
