@@ -24,7 +24,7 @@
 <script src="<?php echo $app->BASE_URL('public/assets/js/app.js'); ?>"></script>
 <script src="<?php echo $app->BASE_URL('public/assets/js/jquery.core.js'); ?>"></script>
 <script src="<?php echo $app->BASE_URL('public/assets/js/jquery.app.js'); ?>"></script>
-<script src="<?php echo $app->BASE_URL('public/assets/js/rating.js');?>"</div>
+<script src="<?php echo $app->BASE_URL('public/assets/js/rating.js');?>"></script>
 <script>
     jQuery(document).ready(function () {
         <?php if ($account == 'chat') { ?>
