@@ -19,8 +19,8 @@ class Config extends PDO
     public $siteName = "Edge Store";
     public $Facebook = "https://www.facebook.com/Conquer.Hubs";
     public $gmail = array(
-        'email' => 'malek.mohamed9211@gmail.com',
-        'password' => 'Ma01150188676'
+        'email' => 'mail@domain.com',
+        'password' => 'password'
     );
     public $conn;
 
@@ -29,7 +29,7 @@ class Config extends PDO
     {
         /* if you Put the WebSite Files in a Folder inside your WWW Folder or Htdoc Folder Put the folder name Here
                                                 ↓             */
-        return 'http://' . $_SERVER['HTTP_HOST'] . '/store/' . $link;
+        return 'http://' . $_SERVER['HTTP_HOST'] . '/' . $link;
 
     }
 
